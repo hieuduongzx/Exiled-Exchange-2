@@ -9,8 +9,9 @@ import OverlayWindow from "./overlay/OverlayWindow.vue";
 </script>
 
 <style lang="postcss">
-@import url("@fortawesome/fontawesome-free/css/all.min.css");
-@import url("animate.css/animate.css");
+@import url("@fortawesome/fontawesome-free/css/fontawesome.min.css");
+@import url("@fortawesome/fontawesome-free/css/solid.min.css");
+@import url("@fortawesome/fontawesome-free/css/regular.min.css");
 @import url("../assets/font.css");
 @tailwind base;
 @tailwind components;

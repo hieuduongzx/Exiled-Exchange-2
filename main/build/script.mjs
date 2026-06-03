@@ -21,6 +21,7 @@ const electronRunner = (() => {
 const visionBuild = await esbuild.build({
   entryPoints: ['src/vision/link-worker.ts'],
   bundle: true,
+  minify: !isDev,
   platform: 'node',
   outfile: 'dist/vision.js'
 })

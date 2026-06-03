@@ -7,6 +7,14 @@ export default defineConfig({
   build: {
     target: "esnext",
     assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["vue", "vue-i18n", "@vueuse/core"],
+          charts: ["apexcharts", "vue3-apexcharts"],
+        },
+      },
+    },
   },
   optimizeDeps: {
     esbuildOptions: { target: "esnext" },

@@ -238,6 +238,7 @@ export default defineComponent({
         coreCurrency: "exalted",
         currencyVolume: "both",
         rememberListingType: false,
+        autoSearch: true,
       };
     },
   } satisfies WidgetSpec,

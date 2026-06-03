@@ -14,6 +14,7 @@ const POEDB_LANGS = {
   "es": "sp",
   "pt": "pt",
   "fr": "fr",
+  "vi": "us",
 };
 
 const POE2DB_CONVERSIONS = new Map([

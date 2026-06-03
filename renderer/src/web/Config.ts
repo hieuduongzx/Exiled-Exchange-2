@@ -112,6 +112,8 @@ export function poeWebApi() {
       return "br.pathofexile.com";
     case "fr":
       return "fr.pathofexile.com";
+    case "vi":
+      return "www.pathofexile.com";
   }
 }
 
@@ -142,7 +144,7 @@ export interface Config {
   logKeys: boolean;
   accountName: string;
   stashScroll: boolean;
-  language: "en" | "ru" | "cmn-Hant" | "ko" | "ja" | "de" | "es" | "pt" | "fr";
+  language: "en" | "ru" | "cmn-Hant" | "ko" | "ja" | "de" | "es" | "pt" | "fr" | "vi";
   preferredTradeSite: "default" | "www";
   realm: "pc-ggg" | "pc-garena";
   widgets: widget.Widget[];
@@ -156,7 +158,7 @@ export interface Config {
 }
 
 export const defaultConfig = (): Config => ({
-  configVersion: 31,
+  configVersion: 32,
   overlayKey: "Shift + Space",
   overlayBackground: "rgba(129, 139, 149, 0.15)",
   overlayBackgroundClose: true,
@@ -647,6 +649,15 @@ function upgradeConfig(_config: Config): Config {
     priceCheck.rememberListingType = false;
 
     config.configVersion = 31;
+  }
+
+  if (config.configVersion < 32) {
+    const priceCheck = config.widgets.find(
+      (w) => w.wmType === "price-check",
+    ) as widget.PriceCheckWidget;
+    priceCheck.autoSearch = true;
+
+    config.configVersion = 32;
   }
   /* eslint-enable */
 

@@ -150,10 +150,7 @@ export const usePoeninja = createGlobalState(() => {
   let downloadController: AbortController | undefined;
   let lastInterestTime = 0;
 
-  let priceCache = new Map<
-    { ns: string; name: string; count: number },
-    CurrencyValue
-  >();
+  let priceCache = new Map<string, CurrencyValue>();
 
   async function load(force: boolean = false) {
     const league = leagues.selected.value;
@@ -221,10 +218,7 @@ export const usePoeninja = createGlobalState(() => {
       }
 
       // Clear cache
-      priceCache = new Map<
-        { ns: string; name: string; count: number },
-        CurrencyValue
-      >();
+      priceCache = new Map<string, CurrencyValue>();
 
       lastUpdateTime = Date.now();
     } catch (e) {
@@ -338,7 +332,7 @@ export const usePoeninja = createGlobalState(() => {
   }
 
   function cachedCurrencyByQuery(query: DbQuery, count: number) {
-    const key = { ns: query.ns, name: query.name, count };
+    const key = `${query.ns}::${query.name}::${count}`;
     if (priceCache.has(key)) {
       return priceCache.get(key)!;
     }
