@@ -40,8 +40,8 @@
       <AppTitleBar @close="cancel" :title="t('settings.title')" />
       <div class="flex grow min-h-0">
         <div
-          class="pl-2 pt-2 bg-gray-900 flex flex-col gap-1"
-          style="min-width: 10rem"
+          class="pl-2 pt-2 flex flex-col gap-1"
+          style="min-width: 10rem; background: rgba(10,10,12,0.9); backdrop-filter: blur(12px);"
         >
           <template v-for="item of menuItems">
             <button
@@ -77,8 +77,8 @@
             /></a>
           </div> -->
         </div>
-        <div class="text-gray-100 grow layout-column bg-gray-900">
-          <div class="grow overflow-y-auto bg-gray-800 rounded-tl">
+        <div class="text-gray-100 grow layout-column" style="background: rgba(10,10,12,0.9); backdrop-filter: blur(12px);">
+          <div class="grow overflow-y-auto rounded-tl" style="background: rgba(18,18,22,0.7);">
             <component
               v-if="configClone"
               :is="selectedComponent"
@@ -87,12 +87,13 @@
             />
           </div>
           <div
-            class="border-t bg-gray-900 border-gray-600 p-2 flex justify-end gap-x-2"
+            class="border-t p-2 flex justify-end gap-x-2"
+            style="border-color: rgba(255,255,255,0.06); background: rgba(10,10,12,0.9);"
           >
-            <button @click="save" class="px-3 bg-gray-800 rounded">
+            <button @click="save" class="btn" style="background: rgba(20,184,166,0.15); border-color: rgba(20,184,166,0.3); color: #2dd4bf;">
               {{ t("Save") }}
             </button>
-            <button @click="cancel" class="px-3">{{ t("Cancel") }}</button>
+            <button @click="cancel" class="btn">{{ t("Cancel") }}</button>
           </div>
         </div>
       </div>
@@ -394,27 +395,31 @@ function flatJoin<T, J>(arr: T[][], joinEl: () => J) {
   text-align: left;
   @apply p-2;
   line-height: 1;
-  @apply text-gray-600;
+  color: #6b7280;
   @apply rounded-l;
+  transition: all 0.15s ease;
 
   &:hover {
-    @apply text-gray-100;
+    color: #e5e7eb;
   }
 
   &.active {
-    @apply text-gray-400;
-    @apply bg-gray-800;
+    color: #fff;
+    background: rgba(255,255,255,0.04);
+    border-left: 2px solid #14b8a6;
+    padding-left: calc(0.5rem - 2px);
   }
 }
 
 .quit-btn {
-  @apply text-gray-600;
-  @apply border border-gray-800;
+  color: #6b7280;
+  border: 1px solid rgba(255,255,255,0.06);
   @apply p-1 mt-2 mr-2 rounded;
+  transition: all 0.15s ease;
 
   &:hover {
-    @apply text-red-400;
-    @apply border-red-400;
+    color: #f87171;
+    border-color: rgba(248,113,113,0.4);
   }
 }
 

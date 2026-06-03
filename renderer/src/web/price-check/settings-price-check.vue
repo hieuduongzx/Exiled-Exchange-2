@@ -30,7 +30,7 @@
           <input
             v-model="customLeagueId"
             placeholder="My League (PL12345)"
-            class="rounded bg-gray-900 px-1 mb-1 flex-1"
+            class="rounded bg-gray-800 px-1 mb-1 flex-1 border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
           />
         </div>
       </template>
@@ -47,7 +47,7 @@
       <div class="mb-4">
         <input
           v-model="accountName"
-          class="rounded bg-gray-900 px-1 block w-full mb-1 font-poe"
+          class="rounded bg-gray-800 px-1 block w-full mb-1 font-poe border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
         />
       </div>
     </div>
@@ -73,7 +73,7 @@
           <span class="mr-1">+-</span>
           <input
             v-model.number="searchStatRange"
-            class="rounded bg-gray-900 px-1 block w-16 mb-1 font-poe text-center"
+              class="rounded bg-gray-800 px-1 block w-16 mb-1 font-poe text-center border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
           />
           <span class="ml-1">%</span>
         </div>
@@ -189,8 +189,8 @@
         {{ t(":builtin_browser_warning") }}
       </div>
     </div>
-    <div class="border-2 rounded border-gray-700 mb-2">
-      <div class="bg-gray-700 p-2 mb-2">{{ t(":warn_expensive") }}</div>
+    <div class="border rounded border-gray-700 mb-2">
+      <div class="bg-gray-700/60 p-2 mb-2 text-sm">{{ t(":warn_expensive") }}</div>
       <ui-checkbox
         class="mb-4 mx-2"
         :values="['app', 'api']"
@@ -205,12 +205,12 @@
             v-model="smartInitialSearch"
             class="mr-6"
           >
-            <span class="bg-gray-900 text-gray-500 rounded px-2">{{
+            <span class="bg-gray-800 text-gray-400 rounded px-2 border border-gray-700">{{
               hotkeyQuick
             }}</span>
           </ui-toggle>
           <ui-toggle v-if="hotkeyLocked" v-model="lockedInitialSearch">
-            <span class="bg-gray-900 text-gray-500 rounded px-2">{{
+            <span class="bg-gray-800 text-gray-400 rounded px-2 border border-gray-700">{{
               hotkeyLocked
             }}</span>
           </ui-toggle>
@@ -222,7 +222,7 @@
           <div class="flex mr-6">
             <input
               v-model.number="apiLatencySeconds"
-              class="rounded bg-gray-900 px-1 block w-16 mb-1 font-poe text-center"
+            class="rounded bg-gray-800 px-1 block w-16 mb-1 font-poe text-center border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
             />
             <span class="ml-2">{{ t("seconds") }}</span>
           </div>

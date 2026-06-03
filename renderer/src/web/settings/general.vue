@@ -38,7 +38,7 @@
       <div class="flex gap-1">
         <input
           v-model.number="fontSize"
-          class="rounded bg-gray-900 px-1 block w-16 font-poe text-center"
+          class="rounded bg-gray-800 px-1 block w-16 font-poe text-center border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
         />
         <span>px</span>
       </div>
@@ -50,7 +50,7 @@
       <div class="flex-1 mb-1">{{ t(":poe_log_file") }}</div>
       <input
         v-model.trim="clientLog"
-        class="rounded bg-gray-900 px-1 block w-full font-sans"
+        class="rounded bg-gray-800 px-1 block w-full font-sans border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
         placeholder="...?/Grinding Gear Games/Path of Exile 2/logs/Client.txt"
       />
     </div>
@@ -58,7 +58,7 @@
       <div class="flex-1 mb-1">{{ t(":poe_cfg_file") }}</div>
       <input
         v-model.trim="gameConfig"
-        class="rounded bg-gray-900 px-1 block w-full font-sans"
+        class="rounded bg-gray-800 px-1 block w-full font-sans border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
         placeholder="...?/My Games/Path of Exile 2/poe2_production_Config.ini"
       />
     </div>
@@ -68,7 +68,7 @@
       <div class="flex gap-4 items-baseline">
         <input
           v-model="overlayBackground"
-          class="rounded bg-gray-900 px-1 block w-48 font-poe text-center"
+          class="rounded bg-gray-800 px-1 block w-48 font-poe text-center border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
         />
         <ui-radio v-model="overlayBackground" value="rgba(255, 255, 255, 0)">{{
           t(":overlay_bg_none")
@@ -96,7 +96,7 @@
       </div>
       <input
         v-model="windowTitle"
-        class="rounded bg-gray-900 px-1 block w-full mb-1 font-poe"
+        class="rounded bg-gray-800 px-1 block w-full mb-1 font-poe border border-gray-700 focus:border-teal-600 focus:outline-none transition-colors"
       />
     </div>
     <ui-checkbox class="mb-1" v-model="readClientLog">{{

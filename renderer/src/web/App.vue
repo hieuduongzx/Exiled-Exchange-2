@@ -17,15 +17,27 @@ import OverlayWindow from "./overlay/OverlayWindow.vue";
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --glass-bg: rgba(10, 10, 12, 0.88);
+  --glass-bg-solid: rgba(18, 18, 22, 0.96);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-border-hover: rgba(255, 255, 255, 0.12);
+  --accent: #14b8a6;
+  --accent-hover: #2dd4bf;
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --danger: #f87171;
+}
+
 .table-stripped tbody tr:nth-child(odd) {
-  background: #353f52;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 #app {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   overflow: hidden;
   justify-content: space-between;
 
@@ -41,15 +53,20 @@ import OverlayWindow from "./overlay/OverlayWindow.vue";
 }
 
 ::-webkit-scrollbar {
-  width: 0.875rem;
+  width: 0.375rem;
 }
 
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 0.375rem rgba(0, 0, 0, 0.3);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  -webkit-box-shadow: inset 0 0 0.375rem rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -57,90 +74,66 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
 
+input,
+select,
+textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .btn {
-  @apply bg-gray-700;
-  @apply px-2 py-1;
-  @apply text-gray-400;
-  @apply leading-none;
-  @apply rounded;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  padding: 0.25rem 0.75rem;
+  line-height: 1;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: var(--glass-border-hover);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .btn-icon {
-  @apply text-xs text-gray-600;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
-@keyframes ring {
-  0% {
-    -webkit-transform: rotate(-15deg);
-    -ms-transform: rotate(-15deg);
-    transform: rotate(-15deg);
-  }
-
-  2% {
-    -webkit-transform: rotate(15deg);
-    -ms-transform: rotate(15deg);
-    transform: rotate(15deg);
-  }
-
-  4% {
-    -webkit-transform: rotate(-18deg);
-    -ms-transform: rotate(-18deg);
-    transform: rotate(-18deg);
-  }
-
-  6% {
-    -webkit-transform: rotate(18deg);
-    -ms-transform: rotate(18deg);
-    transform: rotate(18deg);
-  }
-
-  8% {
-    -webkit-transform: rotate(-22deg);
-    -ms-transform: rotate(-22deg);
-    transform: rotate(-22deg);
-  }
-
-  10% {
-    -webkit-transform: rotate(22deg);
-    -ms-transform: rotate(22deg);
-    transform: rotate(22deg);
-  }
-
-  12% {
-    -webkit-transform: rotate(-18deg);
-    -ms-transform: rotate(-18deg);
-    transform: rotate(-18deg);
-  }
-
-  14% {
-    -webkit-transform: rotate(18deg);
-    -ms-transform: rotate(18deg);
-    transform: rotate(18deg);
-  }
-
-  16% {
-    -webkit-transform: rotate(-12deg);
-    -ms-transform: rotate(-12deg);
-    transform: rotate(-12deg);
-  }
-
-  18% {
-    -webkit-transform: rotate(12deg);
-    -ms-transform: rotate(12deg);
-    transform: rotate(12deg);
-  }
-
-  20% {
-    -webkit-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
+/* Glass panel utility */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-.faa-ring {
-  animation: ring 2s ease;
-  transform-origin-x: 50%;
-  transform-origin-y: 0px;
-  transform-origin-z: initial;
+.glass-solid {
+  background: var(--glass-bg-solid);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 </style>

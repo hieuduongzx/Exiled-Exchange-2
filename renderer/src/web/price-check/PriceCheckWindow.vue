@@ -31,7 +31,7 @@
     <div
       id="price-window"
       class="layout-column shrink-0 text-gray-200 pointer-events-auto"
-      style="width: 28.75rem"
+      style="width: 28.75rem; max-height: 65vh; overflow-y: auto; align-self: center; border-radius: 0.5rem;"
     >
       <item-editor
         v-if="
@@ -80,7 +80,7 @@
         <i v-else-if="xchgRateLoading()" class="fas fa-dna fa-spin px-2" />
         <div v-else class="w-8" />
       </AppTitleBar>
-      <div class="grow layout-column min-h-0 bg-gray-800">
+      <div class="grow layout-column min-h-0 glass-solid">
         <background-info />
         <check-position-circle
           v-if="showCheckPos"
@@ -97,7 +97,7 @@
             /></template>
             <p>{{ t(item.error.message) }}</p>
           </ui-error-box>
-          <pre class="bg-gray-900 rounded m-4 overflow-x-hidden p-2">{{
+          <pre class="glass rounded m-4 overflow-x-hidden p-2">{{
             item.error.rawText
           }}</pre>
         </template>
@@ -114,7 +114,7 @@
             @item-editor-selection="handleItemEditorSelection"
           />
         </template>
-        <div v-if="isBrowserShown" class="bg-gray-900 px-6 py-2 truncate">
+        <div v-if="isBrowserShown" class="glass-solid px-6 py-2 truncate">
           <i18n-t keypath="app.toggle_browser_hint" tag="div">
             <span class="bg-gray-400 text-gray-900 rounded px-1">{{
               overlayKey

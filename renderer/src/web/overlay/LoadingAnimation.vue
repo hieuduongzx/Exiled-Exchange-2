@@ -46,10 +46,14 @@ Host.onEvent("MAIN->OVERLAY::overlay-attached", () => {
 .box {
   position: relative;
   display: flex;
-  @apply bg-gray-800;
-  @apply text-gray-100;
-  @apply rounded;
-  box-shadow: 0px 0px 1px 2px rgb(255 255 255 / 20%);
+  background: rgba(10, 10, 12, 0.92);
+  backdrop-filter: blur(16px);
+  color: #e5e7eb;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .box::before {

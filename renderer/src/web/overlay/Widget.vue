@@ -357,7 +357,9 @@ export default defineComponent({
 .actionsPanel {
   @apply py-1;
   color: #fff;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(10, 10, 12, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   @apply rounded;
@@ -369,18 +371,19 @@ export default defineComponent({
   white-space: nowrap;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   &.active {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(20, 184, 166, 0.15);
+    color: #2dd4bf;
   }
 
   &.removable {
     background: linear-gradient(
       to left,
       transparent 50%,
-      theme("colors.red.600") 50%
+      #dc2626 50%
     );
     background-size: 250% 100%;
     background-position: right bottom;
@@ -395,31 +398,31 @@ export default defineComponent({
 
 .mover {
   position: absolute;
-  /* top: max(0%, min(calc(y% - (1rem/2)), calc(100% - 1rem))); */
-  /* left: max(0%, min(calc(x% - (1rem/2)), calc(100% - 1rem))); */
   width: 1rem;
   height: 1rem;
-  border: 0.25rem solid rgba(0, 0, 0, 0.6);
-  background: rgba(0, 0, 0, 0.2);
+  border: 0.25rem solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 184, 166, 0.3);
   cursor: move;
   user-select: none;
+  border-radius: 0.25rem;
 
   &.active {
     position: fixed;
-    border-color: #fff;
-    box-shadow:
-      0 1px 3px 0 rgb(0, 0, 0),
-      0 1px 2px 0 rgb(0, 0, 0);
+    border-color: #14b8a6;
+    box-shadow: 0 0 8px rgba(20, 184, 166, 0.4);
   }
 }
 </style>
 
 <style lang="postcss">
 .widget-default-style {
-  @apply rounded;
-  @apply bg-gray-900;
+  border-radius: 0.5rem;
+  background: rgba(10, 10, 12, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow:
-    0 1px 3px 0 rgba(0, 0, 0, 0.75),
-    0 1px 2px 0 rgba(0, 0, 0, 0.75);
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 </style>

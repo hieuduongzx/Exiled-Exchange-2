@@ -12,9 +12,12 @@
           <button
             @click="toggle(widget)"
             :class="
-              widget.wmWants === 'show' ? 'border-gray-500' : 'border-gray-800'
+              widget.wmWants === 'show'
+                ? 'border-teal-500/40 text-teal-300'
+                : 'border-white/5 text-gray-400'
             "
-            class="bg-gray-800 rounded text-gray-100 p-2 leading-none whitespace-nowrap border"
+            class="rounded p-2 leading-none whitespace-nowrap border transition-all hover:bg-white/5"
+            style="background: rgba(10,10,12,0.85); backdrop-filter: blur(8px);"
           >
             <i
               v-if="widget.icon"
@@ -56,11 +59,12 @@
       </div>
       <div v-else class="px-1 pb-1">
         <textarea
-          class="px-2 py-1.5 bg-gray-700 rounded resize-none block"
+          class="px-2 py-1.5 rounded resize-none block"
           rows="1"
           spellcheck="false"
           :placeholder="t(':price_check')"
           @input="handleItemPaste"
+          style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: #e5e7eb;"
         ></textarea>
       </div>
     </div>

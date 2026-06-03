@@ -1,11 +1,12 @@
 <template>
   <button
     @click="updateInput"
-    class="flex items-center"
-    style="height: 1.375rem"
+    :class="$style['toggle']"
+    :aria-pressed="modelValue"
   >
-    <i v-if="modelValue" class="fas fa-toggle-on pr-1 text-gray-300"></i>
-    <i v-else class="fas fa-toggle-off pr-1 text-gray-600"></i>
+    <div :class="[$style.track, { [$style.on]: modelValue }]">
+      <div :class="$style.thumb"></div>
+    </div>
     <slot />
   </button>
 </template>
@@ -31,3 +32,38 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="postcss" module>
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+.track {
+  width: 2.25rem;
+  height: 1.25rem;
+  background-color: #374151;
+  border-radius: 9999px;
+  position: relative;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+.track.on {
+  background-color: #0d9488;
+}
+.thumb {
+  width: 1rem;
+  height: 1rem;
+  background-color: white;
+  border-radius: 9999px;
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  transition: transform 0.2s ease;
+}
+.track.on .thumb {
+  transform: translateX(1rem);
+}
+</style>
