@@ -14,16 +14,32 @@
       @submit="doSearch = true"
       :rebuild-key="rebuildKey"
     />
+    <div v-if="showTabs && doSearch" class="tabs-bar flex border-b-0">
+      <button
+        class="tab-btn"
+        :class="{ active: activeTab === 'trade' }"
+        @click="activeTab = 'trade'"
+      >
+        Trade Search
+      </button>
+      <button
+        class="tab-btn"
+        :class="{ active: activeTab === 'bulk' }"
+        @click="activeTab = 'bulk'"
+      >
+        Bulk Exchange
+      </button>
+    </div>
     <trade-listing
-      v-if="tradeAPI === 'trade' && doSearch"
-      ref="tradeService"
+      v-show="doSearch && ((showTabs && activeTab === 'trade') || (!showTabs && tradeAPI === 'trade'))"
+      ref="tradeRef"
       :filters="itemFilters"
       :stats="itemStats"
       :item="item"
     />
     <trade-bulk
-      v-if="tradeAPI === 'bulk' && doSearch"
-      ref="tradeService"
+      v-show="doSearch && ((showTabs && activeTab === 'bulk') || (!showTabs && tradeAPI === 'bulk'))"
+      ref="bulkRef"
       :filters="itemFilters"
       :item="item"
     />
@@ -76,7 +92,7 @@ import { ItemRarity, ItemCategory, ParsedItem } from "@/parser";
 import TradeListing from "./trade/TradeListing.vue";
 import TradeBulk from "./trade/TradeBulk.vue";
 import TradeLinks from "./trade/TradeLinks.vue";
-import { apiToSatisfySearch, getTradeEndpoint } from "./trade/common";
+import { apiToSatisfySearch, getTradeEndpoint, tradeTag } from "./trade/common";
 import PriceTrend from "./trends/PriceTrend.vue";
 import FiltersBlock from "./filters/FiltersBlock.vue";
 import { createPresets } from "./filters/create-presets";
@@ -144,9 +160,12 @@ export default defineComponent({
     );
     const doSearch = ref(false);
     const tradeAPI = ref<"trade" | "bulk">("bulk");
+    const activeTab = ref<"trade" | "bulk">("trade");
+    const showTabs = computed(() => tradeTag(props.item) != null);
 
     // TradeListing.vue OR TradeBulk.vue
-    const tradeService = ref<{ execSearch(): void } | null>(null);
+    const tradeRef = ref<{ execSearch(): void } | null>(null);
+    const bulkRef = ref<{ execSearch(): void } | null>(null);
     // FiltersBlock.vue
     const filtersComponent = ref<ComponentPublicInstance>(null!);
 
@@ -217,12 +236,37 @@ export default defineComponent({
 
         // NOTE: child `trade-xxx` component renders/receives props on nextTick
         nextTick(() => {
-          if (tradeService.value) {
-            tradeService.value.execSearch();
+          if (showTabs.value) {
+            if (activeTab.value === 'trade' && tradeRef.value) {
+              tradeRef.value.execSearch();
+            } else if (activeTab.value === 'bulk' && bulkRef.value) {
+              bulkRef.value.execSearch();
+            }
+          } else {
+            if (tradeAPI.value === 'trade' && tradeRef.value) {
+              tradeRef.value.execSearch();
+            } else if (tradeAPI.value === 'bulk' && bulkRef.value) {
+              bulkRef.value.execSearch();
+            }
           }
         });
       },
       { deep: false, immediate: true },
+    );
+
+    watch(
+      () => activeTab.value,
+      () => {
+        if (doSearch.value === false) return;
+
+        nextTick(() => {
+          if (activeTab.value === 'trade' && tradeRef.value) {
+            tradeRef.value.execSearch();
+          } else if (activeTab.value === 'bulk' && bulkRef.value) {
+            bulkRef.value.execSearch();
+          }
+        });
+      },
     );
 
     watch(
@@ -332,7 +376,10 @@ export default defineComponent({
       itemStats,
       doSearch,
       tradeAPI,
-      tradeService,
+      activeTab,
+      showTabs,
+      tradeRef,
+      bulkRef,
       filtersComponent,
       showTip,
       noUniqueSelection,
@@ -354,3 +401,28 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="postcss" scoped>
+.tabs-bar {
+  @apply flex gap-0;
+  @apply bg-[rgba(17,24,39,0.7)] backdrop-blur-md;
+  @apply border-b border-[rgba(255,255,255,0.06)];
+}
+
+.tab-btn {
+  @apply flex-1 py-2 px-3 text-sm font-medium;
+  @apply text-gray-400 bg-transparent;
+  @apply border-0 border-b-2 border-transparent;
+  @apply transition-colors duration-200;
+}
+
+.tab-btn:hover {
+  @apply text-gray-300;
+}
+
+.tab-btn.active {
+  @apply text-[#2dd4bf];
+  @apply border-b-[#14b8a6];
+  @apply bg-[rgba(20,184,166,0.08)];
+}
+</style>
