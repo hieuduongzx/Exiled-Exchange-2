@@ -1,6 +1,6 @@
 import { itemIsModifiable, ParsedItem } from "./ParsedItem";
 import { stat } from "@/assets/data";
-import { StatRoll, StatSource, statSourcesTotal } from "./modifiers";
+import { ModifierType, StatRoll, StatSource, statSourcesTotal } from "./modifiers";
 
 export const QUALITY_STATS = {
   ARMOUR: {
@@ -114,6 +114,12 @@ export function calcPropBase(
   const sources: StatSource[] = [];
 
   for (const calc of item.statsByType) {
+    if (
+      calc.type === ModifierType.Augment ||
+      calc.type === ModifierType.AddedAugment
+    ) {
+      continue;
+    }
     let total: StatRoll;
     if (statRefs.flat.includes(calc.stat.ref)) {
       total = flat;

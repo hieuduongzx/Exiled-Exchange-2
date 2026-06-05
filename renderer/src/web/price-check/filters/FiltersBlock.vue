@@ -202,7 +202,7 @@
       :class="presets.length > 1 ? 'mt-1' : 'mt-4'"
     >
       <div class="flex" v-if="presets.length > 1">
-        <div class="w-5 border-b border-gray-700" />
+        <div class="w-5" />
         <div
           class="flex divide-x border-gray-700 border-t border-l border-r rounded-t overflow-hidden"
         >
@@ -214,20 +214,45 @@
             {{ t(preset.id) }}
           </button>
         </div>
-        <div class="flex-1 border-b border-gray-700" />
+        <div class="flex-1" />
       </div>
       <form @submit.prevent="handleStatsSubmit">
-        <filter-modifier
-          v-for="filter of filteredStats"
-          :key="filter.tag + '/' + filter.text"
-          :filter="filter"
-          :item="item"
-          :show-sources="showFilterSources"
-          @submit="handleStatsSubmit"
-        />
+        <template v-if="hasGroupedSections">
+          <template v-for="section of groupedSections" :key="section.label">
+            <div
+              v-if="section.filters.length"
+              class="flex items-baseline gap-2 py-1"
+            >
+              <span
+                class="text-xs font-semibold uppercase tracking-wider shrink-0"
+                :class="section.color"
+                >{{ section.label }}</span
+              >
+              <div class="flex-1" :class="section.borderColor" />
+            </div>
+            <filter-modifier
+              v-for="filter of section.filters"
+              :key="filter.tag + '/' + filter.text"
+              :filter="filter"
+              :item="item"
+              :show-sources="showFilterSources"
+              @submit="handleStatsSubmit"
+            />
+          </template>
+        </template>
+        <template v-else>
+          <filter-modifier
+            v-for="filter of filteredStats"
+            :key="filter.tag + '/' + filter.text"
+            :filter="filter"
+            :item="item"
+            :show-sources="showFilterSources"
+            @submit="handleStatsSubmit"
+          />
+        </template>
         <div
           v-if="!filteredStats.length && !showUnknownMods"
-          class="border-b border-gray-700 py-2"
+          class="py-2"
         >
           {{ t("filters.empty") }}
         </div>
@@ -240,7 +265,7 @@
           />
         </template>
         <template v-if="showMissingFracturedWarning">
-          <div class="py-2 border-b border-gray-700 flex flex-col">
+          <div class="py-2 flex flex-col">
             <div class="pb-1 flex items-baseline">
               <i
                 class="w-5 shrink-0 fas fa-exclamation-triangle text-orange-400"
@@ -413,6 +438,165 @@ export default defineComponent({
         } else {
           return props.stats.filter((s) => !s.hidden);
         }
+      }),
+      hasGroupedSections: computed(() => {
+        const stats = showHidden.value
+          ? props.stats.filter((s) => s.hidden)
+          : props.stats.filter((s) => !s.hidden);
+        const isUnique = props.item.rarity === ItemRarity.Unique;
+        const hasPrefix = stats.some((s) =>
+          s.sources.some((src) => src.modifier.info.generation === "prefix"),
+        );
+        const hasSuffix = stats.some((s) =>
+          s.sources.some((src) => src.modifier.info.generation === "suffix"),
+        );
+        const hasImplicit = stats.some((s) => s.tag === "implicit");
+        const hasRune = stats.some((s) => s.tag === "rune");
+        const hasProperty = stats.some((s) => s.tag === "property");
+        const hasUniqueMods = isUnique && stats.some(
+          (s) =>
+            s.tag !== "property" &&
+            s.tag !== "implicit" &&
+            s.tag !== "rune" &&
+            s.tag !== "desecrated" &&
+            s.tag !== "fractured" &&
+            s.tag !== "crafted" &&
+            !s.sources.some(
+              (src) =>
+                src.modifier.info.generation === "prefix" ||
+                src.modifier.info.generation === "suffix",
+            ),
+        );
+        return (
+          (hasPrefix && hasSuffix) ||
+          (hasProperty && (hasPrefix || hasSuffix)) ||
+          hasImplicit ||
+          hasRune ||
+          hasUniqueMods
+        );
+      }),
+      groupedSections: computed(() => {
+        const stats = showHidden.value
+          ? props.stats.filter((s) => s.hidden)
+          : props.stats.filter((s) => !s.hidden);
+        const isUnique = props.item.rarity === ItemRarity.Unique;
+
+        const property = stats.filter((s) => s.tag === "property");
+        const implicit = stats.filter((s) => s.tag === "implicit");
+        const rune = stats.filter((s) => s.tag === "rune");
+        const desecrated = stats.filter((s) => s.tag === "desecrated");
+        const fractured = stats.filter((s) => s.tag === "fractured");
+        const crafted = stats.filter((s) => s.tag === "crafted");
+
+        // For Unique items: all explicit modifiers (non-prefix/suffix) go to Unique section
+        // For non-Unique items: split by prefix/suffix generation
+        const uniqueMods = stats.filter(
+          (s) =>
+            s.tag !== "property" &&
+            s.tag !== "implicit" &&
+            s.tag !== "rune" &&
+            s.tag !== "desecrated" &&
+            s.tag !== "fractured" &&
+            s.tag !== "crafted" &&
+            !s.sources.some(
+              (src) =>
+                src.modifier.info.generation === "prefix" ||
+                src.modifier.info.generation === "suffix",
+            ),
+        );
+        const prefixes = stats.filter((s) =>
+          s.tag !== "property" &&
+          s.tag !== "crafted" &&
+          s.tag !== "rune" &&
+          s.sources.some((src) => src.modifier.info.generation === "prefix"),
+        );
+        const suffixes = stats.filter((s) =>
+          s.tag !== "property" &&
+          s.tag !== "crafted" &&
+          s.tag !== "rune" &&
+          s.sources.some((src) => src.modifier.info.generation === "suffix"),
+        );
+        const other = stats.filter(
+          (s) => {
+            if (s.tag === "property" || s.tag === "implicit" || s.tag === "rune" ||
+                s.tag === "desecrated" || s.tag === "fractured" || s.tag === "crafted") {
+              return false;
+            }
+            if (isUnique) return false;
+            const gen = s.sources[0]?.modifier.info.generation as string;
+            return gen !== "prefix" && gen !== "suffix";
+          },
+        );
+
+        const sections = [
+          {
+            label: "Properties",
+            filters: property,
+            color: "text-blue-400",
+            borderColor: "border-blue-800",
+          },
+          {
+            label: "Implicit",
+            filters: implicit,
+            color: "text-purple-400",
+            borderColor: "border-purple-800",
+          },
+          {
+            label: "Rune",
+            filters: rune,
+            color: "text-yellow-400",
+            borderColor: "border-yellow-800",
+          },
+          ...(isUnique
+            ? [
+                {
+                  label: "Unique",
+                  filters: uniqueMods,
+                  color: "text-amber-400",
+                  borderColor: "border-amber-800",
+                },
+              ]
+            : [
+                {
+                  label: "Prefixes",
+                  filters: prefixes,
+                  color: "text-green-400",
+                  borderColor: "border-green-800",
+                },
+                {
+                  label: "Suffixes",
+                  filters: suffixes,
+                  color: "text-orange-400",
+                  borderColor: "border-orange-800",
+                },
+              ]),
+          {
+            label: "Desecrated",
+            filters: desecrated,
+            color: "text-red-400",
+            borderColor: "border-red-800",
+          },
+          {
+            label: "Fractured",
+            filters: fractured,
+            color: "text-cyan-400",
+            borderColor: "border-cyan-800",
+          },
+          {
+            label: "Crafted",
+            filters: crafted,
+            color: "text-pink-400",
+            borderColor: "border-pink-800",
+          },
+          {
+            label: "Other",
+            filters: other,
+            color: "text-gray-500",
+            borderColor: "border-gray-700",
+          },
+        ];
+
+        return sections.filter((s) => s.filters.length > 0);
       }),
       showUnknownMods,
       hasStats: computed(

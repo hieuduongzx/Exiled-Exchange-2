@@ -176,6 +176,7 @@
     "hide_anointment": "購入者はおそらくアノイントを変更するでしょう",
     "hide_for_crafting": "クラフト用のベースアイテムとして価格を確認する場合のみ選択",
     "hide_empty_mod": "アイテムに6つの修飾子（そのうち1つはクラフト済み）または5つの修飾子がある場合のみ選択",
+    "hide_augment_on_unique": "Augment modifiers are not variable on Unique items",
     "tag_implicit": "暗黙",
     "tag_fractured": "フラクチャー",
     "tag_crafted": "クラフト",

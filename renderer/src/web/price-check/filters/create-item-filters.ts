@@ -135,7 +135,7 @@ export function createFilters(
   }
 
   // "endgame" items (map-like items) (also uniques??)
-  if (item.category === ItemCategory.Map) {
+  if (item.category === ItemCategory.Map || item.category === ItemCategory.Waystone) {
     if (item.rarity === ItemRarity.Unique && item.info.unique) {
       filters.searchExact = {
         name: item.info.name,
@@ -398,6 +398,7 @@ export function createFilters(
       maxUsefulItemLevel(item.category) !== 1 &&
       item.rarity !== ItemRarity.Unique &&
       item.category !== ItemCategory.Map &&
+      item.category !== ItemCategory.Waystone &&
       item.category !== ItemCategory.HeistBlueprint &&
       item.category !== ItemCategory.HeistContract &&
       item.category !== ItemCategory.MemoryLine &&

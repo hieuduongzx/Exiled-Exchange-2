@@ -188,6 +188,7 @@
     "hide_not_max_level": "Habilidades concedidas abaixo do nível máximo raramente agregam valor.",
     "hide_for_map": "A maioria dos modificadores de mapa não tem valor.",
     "hide_revives": "Selecione somente se for diferente de 0 e não quiser exaltá-lo?",
+    "hide_augment_on_unique": "Augment modifiers are not variable on Unique items",
     "tag_implicit": "implícito",
     "tag_fractured": "trincado",
     "tag_crafts": "fabricado",

@@ -28,7 +28,7 @@ export function filterItemProp(ctx: FiltersCreationContext) {
   if (WEAPON.has(ctx.item.category!)) {
     weaponProps(ctx);
   }
-  if (ctx.item.category === ItemCategory.Map) {
+  if (ctx.item.category === ItemCategory.Map || ctx.item.category === ItemCategory.Waystone) {
     mapProps(ctx);
   }
 }

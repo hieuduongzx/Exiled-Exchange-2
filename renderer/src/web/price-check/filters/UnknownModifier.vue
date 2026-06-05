@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row justify-between border-b border-gray-700">
+  <div class="flex flex-row justify-between">
     <div class="py-2 flex flex-col">
       <div class="pb-1 flex items-baseline">
         <i class="w-5 shrink-0 fas fa-exclamation-triangle text-orange-400"></i>

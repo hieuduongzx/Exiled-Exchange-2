@@ -27,6 +27,7 @@ import { decodeOils, applyAnointmentRules } from "./pseudo/anointments";
 import { StatBetter, CLIENT_STRINGS } from "@/assets/data";
 import { explicitModifierCount, maxUsefulItemLevel } from "./common";
 import { getMaxSockets } from "@/parser/Parser";
+import { ARMOUR, WEAPON } from "@/parser/meta";
 
 export interface FiltersCreationContext {
   readonly item: ParsedItem;
@@ -234,8 +235,37 @@ export function initUiModFilters(
     }),
   };
 
+  const weaponMods: StatCalculated[] = [];
   if (item.info.refName !== "Split Personality") {
+    if (WEAPON.has(item.category!)) {
+      // Backup weapon mods before filterItemProp removes them
+      const refsToPreserve = new Set([
+        "Adds # to # Lightning Damage",
+        "Adds # to # Fire Damage",
+        "Adds # to # Cold Damage",
+        "Adds # to # Physical Damage",
+        "#% increased Physical Damage",
+        "#% increased Attack Speed",
+      ]);
+      for (const calc of ctx.statsByType) {
+        if (refsToPreserve.has(calc.stat.ref)) {
+          weaponMods.push(calc);
+        }
+      }
+    }
     filterItemProp(ctx);
+    // Restore weapon mods removed by filterItemProp
+    if (weaponMods.length) {
+      const existingRefs = new Set(
+        ctx.statsByType.map((c) => `${c.type}::${c.stat.ref}`),
+      );
+      for (const mod of weaponMods) {
+        const key = `${mod.type}::${mod.stat.ref}`;
+        if (!existingRefs.has(key)) {
+          ctx.statsByType.push(mod);
+        }
+      }
+    }
     // TODO: see if there are other options here, don't want to include trade site uniques with random augments
     if (item.rarity !== ItemRarity.Unique || !getMaxSockets(item)) {
       filterPseudo(ctx);
@@ -557,12 +587,13 @@ function hideNotVariableStat(filter: StatFilter, item: ParsedItem) {
   )
     return;
 
+  // For unique items, show all stats in UI so user can select them.
+  // Only adjust roll display, don't hide the stat entirely.
   if (!filter.roll) {
-    filter.hidden = "filters.hide_const_roll";
+    return;
   } else if (!filter.roll.bounds && item.rarity === ItemRarity.Unique) {
     filter.roll.min = undefined;
     filter.roll.max = undefined;
-    filter.hidden = "filters.hide_const_roll";
   }
 }
 
@@ -620,7 +651,11 @@ export function finalFilterTweaks(ctx: FiltersCreationContext) {
     item.info.refName !== "Darkness Enthroned"
   ) {
     hideAllAugments(ctx.filters);
+  } else {
+    hideWeaponAugments(ctx.filters, item);
   }
+
+  hideCraftedAlreadyInProperties(ctx.filters, item);
 
   const hasEmptyModifier = showHasEmptyModifier(ctx);
   if (hasEmptyModifier !== false) {
@@ -763,25 +798,69 @@ function applyFlaskRules(filters: StatFilter[]) {
   }
 }
 
+const WEAPON_AUGMENT_REFS = new Set([
+  "Adds # to # Lightning Damage",
+  "Adds # to # Cold Damage",
+  "Adds # to # Fire Damage",
+  "Adds # to # Physical Damage",
+  "#% increased Physical Damage",
+  "#% increased Attack Speed",
+  "#% to Critical Hit Chance",
+  "#% increased Spirit",
+]);
+
+const WEAPON_CRAFTED_REFS = new Set([
+  "Adds # to # Physical Damage",
+  "Adds # to # Lightning Damage",
+  "Adds # to # Cold Damage",
+  "Adds # to # Fire Damage",
+  "#% increased Physical Damage",
+  "#% increased Attack Speed",
+  "#% to Critical Hit Chance",
+]);
+
 function hideAllAugments(filters: StatFilter[]) {
   for (const filter of filters) {
     if (
       filter.tag === FilterTag.Augment ||
       filter.tag === FilterTag.AddedAugment
     ) {
-      // disable all
-      filter.disabled = true;
-
-      // don't hide some specific ones
       if (
         filter.statRef ===
         "Destroys all Augment Sockets on the item to create a Jewel Socket"
       ) {
         continue;
       }
+      filter.hidden = "filters.hide_augment_on_unique";
+    }
+  }
+}
 
-      // hide rest
-      filter.hidden = "filters.hide_const_roll";
+function hideWeaponAugments(filters: StatFilter[], item: ParsedItem) {
+  const isWeapon = WEAPON.has(item.category!);
+  const isArmour = ARMOUR.has(item.category!);
+  if (!isWeapon && !isArmour) return;
+
+  for (const filter of filters) {
+    if (
+      filter.tag === FilterTag.Augment ||
+      filter.tag === FilterTag.AddedAugment
+    ) {
+      if (isWeapon && WEAPON_AUGMENT_REFS.has(filter.statRef)) {
+        filter.hidden = "filters.hide_augment_on_unique";
+      }
+    }
+  }
+}
+
+function hideCraftedAlreadyInProperties(filters: StatFilter[], item: ParsedItem) {
+  if (!WEAPON.has(item.category!)) return;
+
+  for (const filter of filters) {
+    if (filter.tag === FilterTag.Crafted) {
+      if (WEAPON_CRAFTED_REFS.has(filter.statRef)) {
+        filter.hidden = "filters.hide_const_roll";
+      }
     }
   }
 }

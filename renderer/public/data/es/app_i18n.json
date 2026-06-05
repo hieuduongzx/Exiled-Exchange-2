@@ -188,6 +188,7 @@
     "hide_anointment": "Es probable que el comprador cambie la unción",
     "hide_for_crafting": "Seleccionar solo si se está comprobando el precio como objeto base para creación",
     "hide_empty_mod": "Seleccionar solo si el objeto tiene 6 modificadores (1 de los cuales es elaborado) o si tiene 5 modificadores",
+    "hide_augment_on_unique": "Augment modifiers are not variable on Unique items",
     "tag_implicit": "implícito",
     "tag_fractured": "fracturado",
     "tag_crafted": "elaborado",

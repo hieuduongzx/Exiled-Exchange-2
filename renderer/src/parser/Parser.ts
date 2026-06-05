@@ -297,6 +297,15 @@ function findInDatabase(item: ParserState) {
   if (item.category === ItemCategory.Charm) {
     item.category = ItemCategory.Flask;
   }
+
+  // Override waystone category and extract tier from baseType
+  if (item.category === ItemCategory.Map && item.baseType) {
+    const waystoneMatch = item.baseType.match(/Waystone \(Tier (\d+)\)/);
+    if (waystoneMatch) {
+      item.category = ItemCategory.Waystone;
+      item.mapTier = Number(waystoneMatch[1]);
+    }
+  }
 }
 
 function parseMap(section: string[], item: ParsedItem) {
@@ -310,10 +319,29 @@ function parseMap(section: string[], item: ParsedItem) {
 
 function parseWaystone(section: string[], item: ParsedItem) {
   performance.mark("parseWaystone");
+
+  // Match section starting with "Waystone Tier:" (old format)
   if (section[0].startsWith(_$.WAYSTONE_TIER)) {
     item.mapTier = Number(section.shift()!.slice(_$.WAYSTONE_TIER.length));
+    item.category = ItemCategory.Waystone;
+    parseWaystoneProperties(section, item);
+    return "SECTION_PARSED";
+  }
 
-    for (const line of section) {
+  // Match section starting with waystone properties (new format without separate tier line)
+  if (
+    item.category === ItemCategory.Waystone &&
+    section[0].startsWith(_$.WAYSTONE_REVIVES)
+  ) {
+    parseWaystoneProperties(section, item);
+    return "SECTION_PARSED";
+  }
+
+  return "SECTION_SKIPPED";
+}
+
+function parseWaystoneProperties(section: string[], item: ParsedItem) {
+  for (const line of section) {
       if (line.startsWith(_$.WAYSTONE_REVIVES)) {
         item.mapRevives = parseInt(line.slice(_$.WAYSTONE_REVIVES.length), 10);
         continue;
@@ -359,10 +387,6 @@ function parseWaystone(section: string[], item: ParsedItem) {
         continue;
       }
     }
-
-    return "SECTION_PARSED";
-  }
-  return "SECTION_SKIPPED";
 }
 
 function parseBlightedMap(item: ParsedItem) {
@@ -810,14 +834,6 @@ function parseArmour(section: string[], item: ParsedItem) {
   if (isParsed === "SECTION_PARSED") {
     parseQualityNested(section, item);
   }
-  if (item.rarity === "Unique") {
-    // undo everything
-    item.armourAR = undefined;
-    item.armourEV = undefined;
-    item.armourES = undefined;
-    item.armourRW = undefined; // ? maybe not ?
-    item.armourBLOCK = undefined;
-  }
 
   return isParsed;
 }
@@ -843,6 +859,7 @@ function parseWeapon(section: string[], item: ParsedItem) {
       item.weaponPHYSICAL = getRollOrMinmaxAvg(
         line
           .slice(_$.PHYSICAL_DAMAGE.length)
+          .replace(/\s+or\s+/g, _$.HYPHEN)
           .split(_$.HYPHEN)
           .map((str) => parseInt(str.replace(/[^\d]/g, ""), 10)),
       );
@@ -856,6 +873,7 @@ function parseWeapon(section: string[], item: ParsedItem) {
         .map((element) =>
           getRollOrMinmaxAvg(
             element
+              .replace(/\s+or\s+/g, _$.HYPHEN)
               .split(_$.HYPHEN)
               .map((str) => parseInt(str.replace(/[^\d]/g, ""), 10)),
           ),
@@ -872,6 +890,7 @@ function parseWeapon(section: string[], item: ParsedItem) {
         .map((element) =>
           getRollOrMinmaxAvg(
             element
+              .replace(/\s+or\s+/g, _$.HYPHEN)
               .split(_$.HYPHEN)
               .map((str) => parseInt(str.replace(/[^\d]/g, ""), 10)),
           ),
@@ -892,6 +911,7 @@ function parseWeapon(section: string[], item: ParsedItem) {
         .map((element) =>
           getRollOrMinmaxAvg(
             element
+              .replace(/\s+or\s+/g, _$.HYPHEN)
               .split(_$.HYPHEN)
               .map((str) => parseInt(str.replace(/[^\d]/g, ""), 10)),
           ),
@@ -912,6 +932,7 @@ function parseWeapon(section: string[], item: ParsedItem) {
         .map((element) =>
           getRollOrMinmaxAvg(
             element
+              .replace(/\s+or\s+/g, _$.HYPHEN)
               .split(_$.HYPHEN)
               .map((str) => parseInt(str.replace(/[^\d]/g, ""), 10)),
           ),
@@ -940,19 +961,6 @@ function parseWeapon(section: string[], item: ParsedItem) {
 
   if (isParsed === "SECTION_PARSED") {
     parseQualityNested(section, item);
-  }
-
-  if (item.rarity === "Unique") {
-    // undo everything
-    item.weaponELEMENTAL = undefined;
-    item.weaponAS = undefined;
-    item.weaponPHYSICAL = undefined;
-    item.weaponCOLD = undefined;
-    item.weaponLIGHTNING = undefined;
-    item.weaponFIRE = undefined;
-    item.weaponCRIT = undefined;
-    item.weaponRELOAD = undefined;
-    item.weaponSPIRIT = undefined;
   }
 
   return isParsed;
@@ -1678,6 +1686,12 @@ function applyElementalAdded(item: ParsedItem) {
 
     item.statsByType.forEach((calc) => {
       if (knownRefs.has(calc.stat.ref)) {
+        if (
+          calc.type === ModifierType.Augment ||
+          calc.type === ModifierType.AddedAugment
+        ) {
+          return;
+        }
         for (const source of calc.sources) {
           if (calc.stat.ref === "Adds # to # Lightning Damage") {
             if (item.weaponLIGHTNING) {

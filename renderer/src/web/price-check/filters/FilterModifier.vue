@@ -382,8 +382,7 @@ export default defineComponent({
 
 <style lang="postcss" module>
 .filter {
-  @apply py-2;
-  @apply border-b border-gray-700;
+  @apply py-1;
   display: flex;
   position: relative;
 }
