@@ -11,9 +11,6 @@ files:
     to: "."
 extraMetadata:
   main: "main.js"
-nsis:
-  oneClick: false
-  allowToChangeInstallationDirectory: true
 win:
   target:
     - "nsis"
@@ -28,6 +25,12 @@ mac:
         - "universal"
   identity: null
   x64ArchFiles: "*"
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: "${name}-Setup-${version}.${ext}"
+portable:
+  artifactName: "${name}-${version}.${ext}"
 appImage:
   executableArgs:
     - "--sandbox"

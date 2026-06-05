@@ -15,9 +15,11 @@
             t(
               filters.trade.listingType === "securable"
                 ? "Instant"
-                : filters.trade.listingType === "any"
-                  ? "Offline"
-                  : "Online",
+                : filters.trade.listingType === "available"
+                  ? "Instant or Online"
+                  : filters.trade.listingType === "any"
+                    ? "Offline"
+                    : "Online",
             )
           }}</span
         >
@@ -42,6 +44,12 @@
             }}</ui-radio>
           </template>
           <template v-else>
+            <ui-radio v-model="filters.trade.listingType" value="available">{{
+              t("Instant or Online")
+            }}</ui-radio>
+            <ui-radio v-model="filters.trade.listingType" value="securable">{{
+              t("Instant")
+            }}</ui-radio>
             <ui-radio
               v-model="filters.trade.listingType"
               value="onlineleague"
@@ -89,26 +97,6 @@
             :value="league.id"
             >{{ league.id }}</ui-radio
           >
-          <template v-if="byTime">
-            <ui-radio
-              class="mt-3"
-              v-model="filters.trade.currency"
-              :value="undefined"
-              >{{ t(":currency_any") }}</ui-radio
-            >
-            <ui-radio v-model="filters.trade.currency" value="exalted">{{
-              t(":currency_only_exalted")
-            }}</ui-radio>
-            <ui-radio v-model="filters.trade.currency" value="chaos">{{
-              t(":currency_only_chaos")
-            }}</ui-radio>
-            <ui-radio v-model="filters.trade.currency" value="divine">{{
-              t(":currency_only_div")
-            }}</ui-radio>
-            <ui-radio v-model="filters.trade.currency" value="exalted_divine">{{
-              t(":currency_exalted_div")
-            }}</ui-radio>
-          </template>
         </div>
       </div>
     </template>
@@ -151,9 +139,8 @@ export default defineComponent({
         leagues.selectedId.value !== props.filters.trade.league,
       showWarning: () =>
         Boolean(
-          (props.filters.trade.listed &&
-            ["1day", "3days", "1week"].includes(props.filters.trade.listed)) ||
-            props.filters.trade.currency,
+          props.filters.trade.listed &&
+            ["1day", "3days", "1week"].includes(props.filters.trade.listed),
         ),
       onOfflineUpdate(offline: boolean) {
         const { filters } = props;

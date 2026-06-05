@@ -12,6 +12,7 @@
         :filters="filters"
         api="trade"
       />
+      <currency-filter v-if="list" :filters="filters" />
       <div class="flex-1"></div>
       <trade-links v-if="list" :get-link="makeTradeLink" />
     </div>
@@ -136,6 +137,7 @@ import { ItemFilters, StatFilter } from "../filters/interfaces";
 import { ItemCategory, ParsedItem } from "@/parser";
 import { artificialSlowdown } from "./artificial-slowdown";
 import OnlineFilter from "./OnlineFilter.vue";
+import CurrencyFilter from "./CurrencyFilter.vue";
 import TradeLinks from "./TradeLinks.vue";
 import TradeItem from "./TradeItem.vue";
 import { useTradeApi } from "./trade-api";
@@ -145,7 +147,7 @@ const slowdown = artificialSlowdown(900);
 const SHOW_RESULTS = 20;
 
 export default defineComponent({
-  components: { OnlineFilter, TradeLinks, TradeItem, UiErrorBox, UiPopover },
+  components: { OnlineFilter, CurrencyFilter, TradeLinks, TradeItem, UiErrorBox, UiPopover },
   props: {
     filters: {
       type: Object as PropType<ItemFilters>,

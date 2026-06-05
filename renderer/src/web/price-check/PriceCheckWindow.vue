@@ -230,7 +230,7 @@ export default defineComponent({
         requestPricePrediction: false,
         rememberCurrency: false,
         // New Settings EE2
-        defaultAllSelected: true,
+        defaultAllSelected: false,
         itemHoverTooltip: "keybind",
         autoFillEmptyRuneSockets: false,
         alwaysShowTier: false,

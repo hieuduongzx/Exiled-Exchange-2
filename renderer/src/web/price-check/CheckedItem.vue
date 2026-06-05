@@ -216,7 +216,7 @@ export default defineComponent({
         );
 
         if (tradeAPI.value === "bulk") {
-          itemFilters.value.trade.listingType = "online";
+          itemFilters.value.trade.listingType = "securable";
         }
         performance.mark("checked-item-switch-item-end");
       },

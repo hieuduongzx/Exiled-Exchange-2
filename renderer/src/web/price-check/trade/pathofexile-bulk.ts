@@ -17,7 +17,7 @@ import { Cache } from "./Cache";
 interface TradeRequest {
   engine: "new";
   query: {
-    status: { option: "online" | "onlineleague" | "any" };
+    status: { option: "online" | "onlineleague" | "any" | "securable" | "available" };
     have: string[];
     want: string[];
     minimum?: number;
@@ -141,15 +141,6 @@ export function createTradeRequest(
   item: ParsedItem,
   have: string[],
 ): TradeRequest {
-  if (
-    filters.trade.listingType === "securable" ||
-    filters.trade.listingType === "available"
-  ) {
-    console.error(
-      "securable and available are not supported for bulk, you shouldn't ever see this",
-    );
-    filters.trade.listingType = "online";
-  }
   return {
     engine: "new",
     query: {
