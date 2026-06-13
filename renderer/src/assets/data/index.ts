@@ -10,7 +10,7 @@ import type {
 } from "./interfaces";
 import { loadClientStrings } from "../client-string-loader";
 import { useTradeData } from "@/web/background/TradeData";
-import { ItemCategory } from "@/parser/meta";
+import { GEM, ItemCategory } from "@/parser/meta";
 import { ItemRarity } from "@/parser/ParsedItem";
 
 export * from "./interfaces";
@@ -38,8 +38,9 @@ export let ITEMS_ITERATOR: (
   andIncludes?: string[],
 ) => Generator<BaseType> = function* () {};
 
-export let ALTQ_GEM_NAMES: () => Generator<string> = function* () {};
-export let REPLICA_UNIQUE_NAMES: () => Generator<string> = function* () {};
+export let GEM_NS_NAMES: () => Generator<string> = function* () {};
+export let UNIQUE_NS_NAMES: () => Generator<string> = function* () {};
+export let ITEM_NS_NAMES: () => Generator<string> = function* () {};
 
 export let TRADE_TAG_TO_REF = new Map<string, string>();
 
@@ -187,12 +188,9 @@ async function loadItems(language: string) {
   ITEM_BY_TRANSLATED = commonFind(indexNames, "name");
   ITEM_BY_REF = commonFind(indexRefNames, "refName");
   ITEMS_ITERATOR = ndjsonFindLines<BaseType>(ndjson);
-  ALTQ_GEM_NAMES = itemNamesFromLines(
-    ITEMS_ITERATOR('altQuality":["Anomalous'),
-  );
-  REPLICA_UNIQUE_NAMES = itemNamesFromLines(
-    ITEMS_ITERATOR('refName":"Replica'),
-  );
+  GEM_NS_NAMES = itemNamesFromLines(ITEMS_ITERATOR('": "GEM"'));
+  UNIQUE_NS_NAMES = itemNamesFromLines(ITEMS_ITERATOR('": "UNIQUE"'));
+  ITEM_NS_NAMES = itemNamesFromLines(ITEMS_ITERATOR('": "ITEM"'));
 
   TRADE_TAG_TO_REF = new Map<string, string>();
   for (const item of ITEMS_ITERATOR('"tradeTag":')) {
@@ -406,7 +404,7 @@ async function loadTradeData() {
     let base: BaseType | undefined;
     const { baseType, name, rarity, category } = itemQuery;
 
-    if (category === ItemCategory.Gem) {
+    if (category && GEM.has(category)) {
       if (name && items.has(name)) {
         base = {
           name: name,

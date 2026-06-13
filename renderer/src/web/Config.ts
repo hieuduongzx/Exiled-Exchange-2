@@ -652,10 +652,11 @@ function upgradeConfig(_config: Config): Config {
   }
 
   if (config.configVersion < 32) {
+    // NOTE: v0.15.0 || poe0.4.0k
     const priceCheck = config.widgets.find(
       (w) => w.wmType === "price-check",
     ) as widget.PriceCheckWidget;
-    priceCheck.autoSearch = true;
+    priceCheck.initialDelay = 48;
 
     config.configVersion = 32;
   }
@@ -830,5 +831,6 @@ function getConfigForHost(): HostConfig {
     readClientLog: config.readClientLog,
     libraryAlpha: config.enableAlphas && config.alphas.includes("library"),
     libraryOutputPath: library.libraryOutputPath,
+    initialDelay: priceCheck.initialDelay,
   };
 }

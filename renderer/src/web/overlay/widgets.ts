@@ -60,6 +60,7 @@ export interface PriceCheckWidget extends Widget {
   currencyVolume: "none" | "value" | "item" | "both";
   rememberListingType: boolean;
   autoSearch: boolean;
+  initialDelay: number;
 }
 
 export interface StopwatchWidget extends Widget {
