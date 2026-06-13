@@ -272,13 +272,17 @@ export default defineComponent({
 
 <style lang="postcss">
 .trade-table-heading {
-  @apply sticky top-0;
-  @apply bg-gray-800;
+  @apply sticky top-0 z-10;
   @apply p-0 m-0;
   @apply whitespace-nowrap;
+  background: var(--glass-bg-solid);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-secondary);
+  font-weight: 600;
 
   & > div {
-    @apply border-b border-gray-700;
+    border-bottom: 1px solid var(--glass-border);
   }
 }
 

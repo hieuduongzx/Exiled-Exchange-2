@@ -45,7 +45,7 @@
     />
     <div v-if="!doSearch" class="flex justify-between items-center">
       <div class="flex w-40" @mouseenter="handleSearchMouseenter">
-        <button class="btn" @click="doSearch = true" style="min-width: 5rem">
+        <button class="btn btn-accent" @click="doSearch = true" style="min-width: 5rem">
           {{ t("Search") }}
         </button>
       </div>

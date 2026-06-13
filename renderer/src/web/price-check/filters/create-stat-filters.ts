@@ -236,6 +236,7 @@ export function initUiModFilters(
   };
 
   const weaponMods: StatCalculated[] = [];
+  const uniqueModsBeforePseudo: StatCalculated[] = [];
   if (item.info.refName !== "Split Personality") {
     if (WEAPON.has(item.category!)) {
       // Backup weapon mods before filterItemProp removes them
@@ -250,6 +251,13 @@ export function initUiModFilters(
       for (const calc of ctx.statsByType) {
         if (refsToPreserve.has(calc.stat.ref)) {
           weaponMods.push(calc);
+        }
+      }
+    }
+    if (item.rarity === ItemRarity.Unique) {
+      for (const calc of ctx.statsByType) {
+        if (calc.type === ModifierType.Explicit || calc.type === ModifierType.Implicit) {
+          uniqueModsBeforePseudo.push(calc);
         }
       }
     }
@@ -272,6 +280,17 @@ export function initUiModFilters(
     }
     if (item.info.refName === "Emperor's Vigilance") {
       filterBasePercentile(ctx);
+    }
+    if (item.rarity === ItemRarity.Unique && uniqueModsBeforePseudo.length) {
+      const existingRefs = new Set(
+        ctx.statsByType.map((c) => `${c.type}::${c.stat.ref}`),
+      );
+      for (const mod of uniqueModsBeforePseudo) {
+        const key = `${mod.type}::${mod.stat.ref}`;
+        if (!existingRefs.has(key)) {
+          ctx.statsByType.push(mod);
+        }
+      }
     }
   }
 
@@ -392,13 +411,17 @@ export function calculatedStatToFilter(
     };
   }
 
+  const textForRolllessStat = !roll && sources.length
+    ? sources[0].stat.translation.string
+    : translation.string;
+
   filter ??= {
     tradeId:
       stat.trade.ids[
         type === ModifierType.AddedAugment ? ModifierType.Augment : type
       ],
     statRef: stat.ref,
-    text: translation.string,
+    text: textForRolllessStat,
     tag: type as unknown as FilterTag,
     oils: decodeOils(calc),
     sources,

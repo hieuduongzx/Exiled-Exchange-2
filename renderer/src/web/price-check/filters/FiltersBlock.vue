@@ -295,10 +295,10 @@
       <div class="flex gap-x-4">
         <button
           @click="statsVisibility.disabled = !statsVisibility.disabled"
-          class="bg-gray-700 px-2 py-1 text-gray-400 leading-none rounded-b w-40"
+          class="btn w-40 rounded-t-none flex items-center justify-center gap-1"
         >
           {{ t("filters.collapse") }}
-          <i class="fas fa-chevron-up pl-1 text-xs text-gray-600"></i>
+          <i class="fas fa-chevron-up text-xs"></i>
         </button>
         <ui-toggle
           v-if="filteredStats.length !== stats.length"
@@ -654,20 +654,21 @@ export default defineComponent({
 
 <style lang="postcss" module>
 .presetBtn {
-  @apply border-gray-700 bg-gray-800;
+  border-color: var(--glass-border);
+  background: var(--surface-1);
+  color: var(--text-secondary);
   @apply px-2;
   min-width: 3rem;
+  transition: all 0.15s ease;
 
   &:hover {
-    @apply bg-gray-700;
+    background: var(--surface-2);
+    color: var(--text-primary);
   }
 
   &.active {
-    background: linear-gradient(
-      to bottom,
-      theme("colors.gray.900"),
-      theme("colors.gray.800")
-    );
+    background: var(--accent-soft);
+    color: var(--accent-hover);
   }
 }
 </style>

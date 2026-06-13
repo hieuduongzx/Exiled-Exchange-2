@@ -44,15 +44,24 @@ function toggle() {
 
 <style lang="postcss" module>
 .btn {
-  @apply bg-gray-900 rounded;
-  @apply border border-transparent;
+  background: var(--surface-1);
+  @apply rounded;
+  border: 1px solid var(--glass-border);
   @apply pl-1 pr-2;
   line-height: 1.25rem;
   display: flex;
   align-items: center;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--surface-2);
+    border-color: var(--glass-border-hover);
+  }
 
   &.active {
-    @apply border-gray-500;
+    background: var(--accent-soft);
+    border-color: var(--accent-ring);
+    color: var(--accent-hover);
   }
 }
 </style>

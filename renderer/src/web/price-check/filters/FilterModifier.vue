@@ -394,6 +394,7 @@ export default defineComponent({
   @apply w-12;
   @apply px-1;
   @apply border border-transparent;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:first-child {
     @apply rounded-l;
@@ -410,7 +411,8 @@ export default defineComponent({
   /* &:not(:placeholder-shown) { @apply border-gray-600; } */
 
   &:focus {
-    @apply border-gray-500;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-ring);
     cursor: none;
   }
 }

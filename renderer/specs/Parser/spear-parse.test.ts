@@ -3,7 +3,7 @@ import { setupTests } from "@specs/vitest.setup";
 import { init } from "@/assets/data";
 import { parseClipboard } from "@/parser";
 import { filterItemProp } from "@/web/price-check/filters/pseudo/item-property";
-import { FiltersCreationContext } from "@/web/price-check/filters/interfaces";
+import { FiltersCreationContext } from "@/web/price-check/filters/create-stat-filters";
 
 describe("Spear item parse bug", () => {
   beforeEach(async () => {
@@ -85,7 +85,7 @@ Gain 72(69-84) Life per enemy killed
       item,
       filters: [],
       statsByType: [...item.statsByType],
-      searchInRange: { min: 90, max: 110 },
+      searchInRange: 100,
     };
 
     filterItemProp(ctx);
@@ -94,10 +94,10 @@ Gain 72(69-84) Life per enemy killed
       console.log("filter:", f.statRef, "roll:", f.roll, "disabled:", f.disabled);
     }
 
-    const totalDps = ctx.filters.find((f) => f.statRef === "Total DPS: #");
-    const physDps = ctx.filters.find((f) => f.statRef === "Physical DPS: #");
-    const eleDps = ctx.filters.find((f) => f.statRef === "Elemental DPS: #");
-    const aps = ctx.filters.find((f) => f.statRef === "Attacks per Second: #");
+    const totalDps = ctx.filters.find((f: any) => f.statRef === "Total DPS: #");
+    const physDps = ctx.filters.find((f: any) => f.statRef === "Physical DPS: #");
+    const eleDps = ctx.filters.find((f: any) => f.statRef === "Elemental DPS: #");
+    const aps = ctx.filters.find((f: any) => f.statRef === "Attacks per Second: #");
 
     expect(totalDps).toBeDefined();
     expect(physDps).toBeDefined();
